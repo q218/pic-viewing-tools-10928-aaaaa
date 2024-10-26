@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ナナオの画像を出せるツール</title>
+    <title>ナナオを出せるツール</title>
     <style>
         body {
             background-color: black;
@@ -11,71 +11,42 @@
             height: 100vh;
             overflow: hidden;
             font-family: Arial, sans-serif;
+            cursor: crosshair;
         }
-
-        /* 右上の「N」ボタンと他のボタン */
-        .n-button, .s-button, .d-button, .w-button {
-            position: absolute;
-            right: 20px;
-            background-color: #444;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 18px;
-            z-index: 1000;
-        }
-
-        .n-button { top: 20px; }
-        .s-button { top: 70px; } /* 「🖕」ボタンの位置 */
-        .d-button { top: 120px; } /* 「😮‍💨」ボタンの位置 */
-        .w-button { top: 170px; } /* 「❓️」ボタンの位置 */
 
         /* 画像を表示するスタイル */
         .nanao-img {
             position: absolute;
-            display: none;
             width: 100px;
             height: auto;
         }
     </style>
 </head>
 <body>
-    <!-- 各ボタン -->
-    <button class="n-button" onclick="activateImagePlacement('nanao.jpg')">N</button>
-    <button class="s-button" onclick="activateImagePlacement('sinekasu.jpg')">🖕</button>
-    <button class="d-button" onclick="activateImagePlacement('daru.jpg')">😮‍💨</button>
-    <button class="w-button" onclick="activateImagePlacement('why.jpg')">❓️</button>
-
     <!-- JavaScript -->
     <script>
-        let imageActivated = false;
-        let currentImageSrc = '';
+        // 基本画像のパス（すべて.jpg形式）
+        const baseImages = ['nanao.jpg', 'sinekasu.jpg', 'daru.jpg', 'why.jpg'];
 
-        // ボタンを押したときに画像表示モードを切り替える関数
-        function activateImagePlacement(imageSrc) {
-            imageActivated = !imageActivated;
-            currentImageSrc = imageActivated ? imageSrc : '';
-            document.body.style.cursor = imageActivated ? 'crosshair' : 'default';
-        }
+        // 1から57までの番号画像のパスを生成（.png形式）
+        const numberedImages = Array.from({ length: 57 }, (_, i) => `${i + 1}.png`);
 
-        // クリック位置に画像を配置する関数
+        // すべての画像をまとめた配列
+        const allImages = [...baseImages, ...numberedImages];
+
+        // クリック位置にランダムな画像を配置する関数
         document.body.addEventListener('click', (event) => {
-            // 画像表示が有効で、ボタンをクリックしていない場合のみ実行
-            if (!imageActivated || event.target.classList.contains('n-button') ||
-                event.target.classList.contains('s-button') ||
-                event.target.classList.contains('d-button') ||
-                event.target.classList.contains('w-button')) return;
+            // ランダムに画像を選択
+            const randomImage = allImages[Math.floor(Math.random() * allImages.length)];
 
             // 画像要素の作成
             const img = document.createElement('img');
-            img.src = `./${currentImageSrc}`;  // 画像が同じディレクトリにある必要があります
+            img.src = `./${randomImage}`;  // 画像ファイルが同じディレクトリにある必要があります
             img.className = 'nanao-img';
 
             // クリックした位置に画像を表示
             img.style.left = `${event.pageX - 50}px`;
             img.style.top = `${event.pageY - 50}px`;
-            img.style.display = 'block';
 
             document.body.appendChild(img);
         });
